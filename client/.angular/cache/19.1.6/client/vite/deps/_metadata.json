@@ -1,0 +1,67 @@
+{
+  "hash": "48608066",
+  "configHash": "7e66f6da",
+  "lockfileHash": "85eda73d",
+  "browserHash": "1d756b83",
+  "optimized": {
+    "@angular/common": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
+      "file": "@angular_common.js",
+      "fileHash": "a3b505a9",
+      "needsInterop": false
+    },
+    "@angular/common/http": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
+      "file": "@angular_common_http.js",
+      "fileHash": "454f6d35",
+      "needsInterop": false
+    },
+    "@angular/core": {
+      "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
+      "file": "@angular_core.js",
+      "fileHash": "175869fe",
+      "needsInterop": false
+    },
+    "@angular/forms": {
+      "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
+      "file": "@angular_forms.js",
+      "fileHash": "31c17fc1",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "5e1291d0",
+      "needsInterop": false
+    },
+    "@angular/router": {
+      "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
+      "file": "@angular_router.js",
+      "fileHash": "856594c7",
+      "needsInterop": false
+    },
+    "rxjs": {
+      "src": "../../../../../../node_modules/rxjs/dist/esm5/index.js",
+      "file": "rxjs.js",
+      "fileHash": "fc019b4c",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-4GMUCMKV": {
+      "file": "chunk-4GMUCMKV.js"
+    },
+    "chunk-A33RIVEV": {
+      "file": "chunk-A33RIVEV.js"
+    },
+    "chunk-SAEO7BCD": {
+      "file": "chunk-SAEO7BCD.js"
+    },
+    "chunk-E7R4FTH5": {
+      "file": "chunk-E7R4FTH5.js"
+    },
+    "chunk-5TID76VL": {
+      "file": "chunk-5TID76VL.js"
+    }
+  }
+}

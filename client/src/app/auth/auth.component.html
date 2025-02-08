@@ -1,0 +1,6 @@
+<div class="auth-container">
+  <div class="auth-content">
+    <app-login *ngIf="showLogin" (registerClicked)="toggleForm()"></app-login>
+    <app-register *ngIf="!showLogin" (loginClicked)="toggleForm()"></app-register>
+  </div>
+</div>
