@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthResponse } from '../models/auth-response.model';
 
@@ -47,5 +47,21 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return this.isLoggedInSubject.value;
+  }
+
+  getCurrentUser(): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<any>(`${this.apiUrl}/current`, { headers });
+  }
+
+  updateUser(userId: number, updateData: any): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.put<any>(`${this.apiUrl}/${userId}`, updateData, { headers: headers });
   }
 }

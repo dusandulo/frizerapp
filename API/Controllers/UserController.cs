@@ -79,6 +79,26 @@ namespace API.Controllers
             });
         }
 
+        [HttpGet("current")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int loggedInUserId))
+            {
+                return Unauthorized("You are not authorized.");
+            }
+
+            var users = await _userService.GetUsers();
+            var user = users.FirstOrDefault(x => x.Id == loggedInUserId);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            return Ok(user);
+        }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
