@@ -35,7 +35,7 @@ export class LoginComponent {
     });
   }
 
-  onRegisterClick() {
+  goToRegister() {
     this.registerClicked.emit();
   }
 }

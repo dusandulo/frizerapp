@@ -1,6 +1,16 @@
 <div class="auth-container">
   <div class="auth-content">
-    <app-login *ngIf="showLogin" (registerClicked)="toggleForm()"></app-login>
-    <app-register *ngIf="!showLogin" (loginClicked)="toggleForm()"></app-register>
+    <app-login
+      *ngIf="authState === AuthState.LOGIN"
+      (registerClicked)="setAuthState(AuthState.REGISTER)">
+    </app-login>
+    <app-register
+      *ngIf="authState === AuthState.REGISTER"
+      (loginClicked)="setAuthState(AuthState.LOGIN)"
+      (otpClicked)="setAuthState(AuthState.OTP)">
+    </app-register>
+    <app-otp
+      *ngIf="authState === AuthState.OTP">
+    </app-otp>
   </div>
 </div>

@@ -19,6 +19,7 @@ export class RegisterComponent {
   };
 
   @Output() loginClicked = new EventEmitter<void>();
+  @Output() otpClicked = new EventEmitter<void>();
 
   constructor(private router: Router, private authService: AuthService) {}
 
@@ -26,7 +27,7 @@ export class RegisterComponent {
     this.authService.register(this.credentials).subscribe({
       next: (response) => {
         console.log('Registration successful', response);
-        this.loginClicked.emit(); 
+        this.otpClicked.emit();
       },
       error: (error) => {
         console.error('Registration failed', error);

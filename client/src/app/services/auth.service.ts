@@ -4,27 +4,34 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthResponse } from '../models/auth-response.model';
+import { AuthState } from '../enums/auth-state.enum';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private isLoggedInSubject = new BehaviorSubject<boolean>(false);
-  isLoggedIn$: Observable<boolean> = this.isLoggedInSubject.asObservable();
+  private authStateSubject = new BehaviorSubject<AuthState>(this.getInitialAuthState());
+  authState$ = this.authStateSubject.asObservable();
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient, private router: Router) {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.isLoggedInSubject.next(true);
+  constructor(private http: HttpClient, private router: Router) {}
+
+  private getInitialAuthState(): AuthState {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      return AuthState.AUTHENTICATED;
     }
+    return AuthState.LOGIN;
+  }
+
+  private saveAuthState(state: AuthState): void {
+    localStorage.setItem('authState', state.toString());
   }
 
   register(credentials: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/register`, credentials).pipe(
-      tap((response: any) => {
-        console.log('Registration successful', response.token);
-        this.router.navigate(['/login']);
+      tap(() => {
+        this.setAuthState(AuthState.OTP);
       })
     );
   }
@@ -33,7 +40,7 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response) => {
         localStorage.setItem('token', response.token);
-        this.isLoggedInSubject.next(true);
+        this.setAuthState(AuthState.AUTHENTICATED);
         this.router.navigate(['/dashboard']);
       })
     );
@@ -41,12 +48,18 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
-    this.isLoggedInSubject.next(false);
-    this.router.navigate(['/login']);
+    localStorage.removeItem('authState');
+    this.setAuthState(AuthState.LOGIN);
+    this.router.navigate(['/auth']);
+  }
+
+  setAuthState(state: AuthState) {
+    this.authStateSubject.next(state);
+    this.saveAuthState(state);
   }
 
   isLoggedIn(): boolean {
-    return this.isLoggedInSubject.value;
+    return !!localStorage.getItem('token');
   }
 
   getCurrentUser(): Observable<any> {
