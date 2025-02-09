@@ -39,16 +39,22 @@ export class AuthService {
   login(credentials: any): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response) => {
-        localStorage.setItem('token', response.token);
-        this.setAuthState(AuthState.AUTHENTICATED);
-        this.router.navigate(['/dashboard']);
+        if (response.isUserVerified) {
+          localStorage.setItem('token', response.token);
+          this.setAuthState(AuthState.AUTHENTICATED);
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.setAuthState(AuthState.OTP);
+          localStorage.setItem('emailForOTP', credentials.email);
+          this.router.navigate(['/auth/otp']);
+        }
       })
     );
   }
+  
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('authState');
+    localStorage.clear();
     this.setAuthState(AuthState.LOGIN);
     this.router.navigate(['/auth']);
   }
@@ -76,5 +82,13 @@ export class AuthService {
       'Authorization': `Bearer ${token}`
     });
     return this.http.put<any>(`${this.apiUrl}/${userId}`, updateData, { headers: headers });
+  }
+
+  verifyOtp(email: string, otp: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/verify-otp`, { email, otp });
+  }
+
+  resendOtp(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/resend-otp`, { email });
   }
 }

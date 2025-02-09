@@ -5,4 +5,5 @@ export interface User{
     name: string;
     role: string;
     createdAt: Date;
+    isUserVerified: boolean;
 }

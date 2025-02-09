@@ -1,16 +1,22 @@
 <div class="auth-container">
   <div class="auth-content">
-    <app-login
-      *ngIf="authState === AuthState.LOGIN"
-      (registerClicked)="setAuthState(AuthState.REGISTER)">
-    </app-login>
-    <app-register
-      *ngIf="authState === AuthState.REGISTER"
-      (loginClicked)="setAuthState(AuthState.LOGIN)"
-      (otpClicked)="setAuthState(AuthState.OTP)">
-    </app-register>
-    <app-otp
-      *ngIf="authState === AuthState.OTP">
-    </app-otp>
+    <ng-container *ngIf="isUserVerified === false">
+      <app-login
+        *ngIf="authState === AuthState.LOGIN"
+        (registerClicked)="setAuthState(AuthState.REGISTER)">
+      </app-login>
+      <app-register
+        *ngIf="authState === AuthState.REGISTER"
+        (loginClicked)="setAuthState(AuthState.LOGIN)"
+        (otpClicked)="setAuthState(AuthState.OTP)">
+      </app-register>
+      <app-otp
+        *ngIf="authState === AuthState.OTP">
+      </app-otp>
+    </ng-container>
+
+    <div *ngIf="isUserVerified === null">
+      <p>Loading...</p>
+    </div>
   </div>
 </div>

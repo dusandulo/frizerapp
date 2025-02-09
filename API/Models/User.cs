@@ -12,5 +12,6 @@ namespace API.Models
         public DateTime CreatedAt { get; set; }
         public string OTP { get; set; }
         public DateTime? OTPExpiration { get; set; }
+        public bool IsUserVerified { get; set; }
     }
 }

@@ -29,7 +29,8 @@ namespace API.Services
                 PasswordHash = passwordHash,
                 CreatedAt = DateTime.UtcNow,
                 OTP = otp,
-                OTPExpiration = DateTime.UtcNow.AddMinutes(10)
+                OTPExpiration = DateTime.UtcNow.AddMinutes(10),
+                IsUserVerified = false
             };
 
             _context.Users.Add(user);
@@ -52,7 +53,8 @@ namespace API.Services
             return user;
         }
 
-        public async Task<User> Update(int id, UpdateUserDto updateDto)
+        public async Task<User> Update(int id, UpdateUserDto updateDto) // edit-profile
+
         {
             var user = await _context.Users.FindAsync(id);
 
@@ -73,6 +75,17 @@ namespace API.Services
             return user;
         }
 
+        public async Task UpdateUser(User user) // otp
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _context.Users.SingleOrDefaultAsync(x => x.Email == email);
+        }
+
         public async Task<bool> EmailExist(string email)
         {
             return await _context.Users.AnyAsync(x => x.Email == email.ToLower());
@@ -83,7 +96,7 @@ namespace API.Services
             return await _context.Users.ToListAsync();
         }
 
-        private string GenerateOTP()
+        public string GenerateOTP()
         {
             Random random = new Random();
             string randomNumber = random.Next(0, 1000000).ToString("D6");
@@ -98,7 +111,7 @@ namespace API.Services
             return emailBody;
         }
 
-        private async Task SendOtpMail(string email, string OtpText, string name)
+        public async Task SendOtpMail(string email, string OtpText, string name)
         {
             var mailRequest = new MailRequest();
             mailRequest.Email = email;
@@ -119,6 +132,7 @@ namespace API.Services
 
             user.OTP = null;
             user.OTPExpiration = null;
+            user.IsUserVerified = true;
 
             await _context.SaveChangesAsync();
             return true;

@@ -27,6 +27,7 @@ export class RegisterComponent {
     this.authService.register(this.credentials).subscribe({
       next: (response) => {
         console.log('Registration successful', response);
+        localStorage.setItem('emailForOTP', this.credentials.email);
         this.otpClicked.emit();
       },
       error: (error) => {

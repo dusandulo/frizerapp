@@ -3,24 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using API.DTOs;
-using API.Services;
 using API.Interfaces;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : ControllerBase
+    public class UserController(IUserService userService, IAuthService authService) : ControllerBase
     {
-        private readonly IUserService _userService;
-
-        private readonly IAuthService _authService;
-
-        public UserController(IUserService userService, IAuthService authService)
-        {
-            _userService = userService;
-            _authService = authService;
-        }
+        private readonly IUserService _userService = userService;
+        private readonly IAuthService _authService = authService;
 
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(RegisterDto registerDto)
@@ -36,7 +28,8 @@ namespace API.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 Name = user.Name,
-                Token = token
+                Token = token,
+                IsUserVerified = user.IsUserVerified
             });
         }
 
@@ -55,7 +48,8 @@ namespace API.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 Name = user.Name,
-                Token = token
+                Token = token,
+                IsUserVerified = user.IsUserVerified
             });
         }
 
@@ -75,7 +69,8 @@ namespace API.Controllers
             {
                 Id = user.Id,
                 Email = user.Email,
-                Name = user.Name
+                Name = user.Name,
+                IsUserVerified = user.IsUserVerified
             });
         }
 
@@ -107,10 +102,45 @@ namespace API.Controllers
             {
                 Id = user.Id,
                 Email = user.Email,
-                Name = user.Name
+                Name = user.Name,
+                IsUserVerified = user.IsUserVerified
             });
-            
+
             return Ok(userDtos);
+        }
+
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpDto otpDto)
+        {
+            var isVerified = await _userService.VerifyOtp(otpDto.Email, otpDto.OTP);
+
+            if (!isVerified)
+            {
+                return BadRequest(new { message = "Invalid or expired OTP." });
+            }
+
+            return Ok(new { message = "OTP verified successfully." });
+        }
+
+        [HttpPost("resend-otp")]
+        public async Task<IActionResult> ResendOtp([FromBody] ResendOtpDto resendOtpDto)
+        {
+            var user = await _userService.GetUserByEmail(resendOtpDto.Email);
+
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found." });
+            }
+
+            var otp = _userService.GenerateOTP();
+            user.OTP = otp;
+            user.OTPExpiration = DateTime.UtcNow.AddMinutes(10);
+
+            await _userService.UpdateUser(user);
+
+            await _userService.SendOtpMail(user.Email, otp, user.Name);
+
+            return Ok(new { message = "OTP resent successfully." });
         }
     }
 }

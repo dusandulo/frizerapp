@@ -5,6 +5,7 @@ import { OtpComponent } from './otp/otp.component';
 import { CommonModule } from '@angular/common';
 import { AuthState } from '../enums/auth-state.enum';
 import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
@@ -16,18 +17,33 @@ import { AuthService } from '../services/auth.service';
 export class AuthComponent implements OnInit {
   authState: AuthState = AuthState.LOGIN;
   AuthState = AuthState;
-  isLoggedIn: boolean = false;
+  isUserVerified: boolean | null = null;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        if (user) {
+          this.isUserVerified = user.isUserVerified;
+          if (this.isUserVerified) {
+            this.router.navigate(['/dashboard']);
+          } else {
+            this.authState = AuthState.OTP;
+          }
+        }
+      },
+      error: () => {
+        this.isUserVerified = false;
+      }
+    });
+
     this.authService.authState$.subscribe(state => {
       this.authState = state;
-      this.isLoggedIn = state === AuthState.AUTHENTICATED;
     });
   }
 
   setAuthState(state: AuthState) {
-    this.authService.setAuthState(state);
+    this.authState = state;
   }
 }
