@@ -1,63 +1,91 @@
 <div class="min-h-screen bg-gray-100 flex justify-center items-center">
-  <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
-    <h2 class="text-2xl font-bold mb-6 text-center">Edit Profile</h2>
-
-    <div *ngIf="successMessage" class="bg-green-200 text-green-800 p-3 rounded mb-4">
-      {{ successMessage }}
+  <div
+    class="bg-white shadow-lg rounded-2xl px-8 pt-8 pb-10 mb-6 w-full max-w-md transform transition-all duration-300 hover:shadow-xl"
+  >
+    <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">
+      Edit Profile
+    </h2>
+    <div
+      *ngIf="successMessage"
+      class="flex items-center bg-green-100 text-green-800 p-3 rounded-lg mb-4 animate-fade-in"
+    >
+      ✅ {{ successMessage }}
     </div>
 
-    <div *ngIf="errorMessage" class="bg-red-200 text-red-800 p-3 rounded mb-4">
-      {{ errorMessage }}
+    <div
+      *ngIf="errorMessage"
+      class="flex items-center bg-red-100 text-red-800 p-3 rounded-lg mb-4 animate-fade-in"
+    >
+      ❌ {{ errorMessage }}
     </div>
 
-    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-      <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
-          Name:
-        </label>
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-5">
+      <div>
+        <label class="block text-gray-700 text-sm font-semibold mb-1" for="name"
+          >Name:</label
+        >
         <input
           id="name"
           type="text"
           formControlName="name"
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
-        <div *ngIf="profileForm.get('name')?.invalid && (profileForm.get('name')?.dirty || profileForm.get('name')?.touched)" class="text-red-500 text-xs italic">
+        <div
+          *ngIf="
+            profileForm.get('name')?.invalid &&
+            (profileForm.get('name')?.dirty || profileForm.get('name')?.touched)
+          "
+          class="text-red-500 text-xs mt-1"
+        >
           Name is required.
         </div>
       </div>
-
-      <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
-          Email:
-        </label>
+      <div>
+        <label
+          class="block text-gray-700 text-sm font-semibold mb-1"
+          for="email"
+          >Email:</label
+        >
         <input
           id="email"
           type="email"
           formControlName="email"
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
-        <div *ngIf="profileForm.get('email')?.invalid && (profileForm.get('email')?.dirty || profileForm.get('email')?.touched)" class="text-red-500 text-xs italic">
-          <div *ngIf="profileForm.get('email')?.errors?.['required']">Email is required.</div>
-          <div *ngIf="profileForm.get('email')?.errors?.['email']">Email must be a valid email address.</div>
+        <div
+          *ngIf="
+            profileForm.get('email')?.invalid &&
+            (profileForm.get('email')?.dirty ||
+              profileForm.get('email')?.touched)
+          "
+          class="text-red-500 text-xs mt-1"
+        >
+          <div *ngIf="profileForm.get('email')?.errors?.['required']">
+            Email is required.
+          </div>
+          <div *ngIf="profileForm.get('email')?.errors?.['email']">
+            Email must be a valid email address.
+          </div>
         </div>
       </div>
 
-      <div class="mb-6">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-          Password:
-        </label>
+      <div>
+        <label
+          class="block text-gray-700 text-sm font-semibold mb-1"
+          for="password"
+          >Password:</label
+        >
         <input
           id="password"
           type="password"
           formControlName="password"
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
       </div>
-
       <div class="flex justify-center">
         <button
           type="submit"
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline"
+          class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition transform active:scale-95"
         >
           Save
         </button>

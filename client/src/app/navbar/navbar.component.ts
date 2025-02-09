@@ -25,9 +25,8 @@ export class NavbarComponent {
   }
 
   editProfile() {
-    console.log('Edit Profile clicked');
     this.router.navigate(['/edit-profile']);
-    this.profileMenuOpen = !this.profileMenuOpen;
+    this.profileMenuOpen = false;
   }
 
   @HostListener('document:click', ['$event'])
