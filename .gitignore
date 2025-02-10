@@ -70,3 +70,13 @@ packages/
 
 # Visual Studio solution settings
 .vs/
+
+# Ignore package.json and Angular dependencies in the deps folder
+client/.angular/
+API/frizer.db
+.tsbuildinfo
+_metadata.json
+client/.angular/cache/19.1.6/client/.tsbuildinfo
+client/.angular/cache/19.1.6/client/vite/deps/_metadata.json
+client/.angular/cache/19.1.6/client/vite/deps_ssr/_metadata.json
+
