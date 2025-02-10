@@ -29,7 +29,8 @@ namespace API.Controllers
                 Email = user.Email,
                 Name = user.Name,
                 Token = token,
-                IsUserVerified = user.IsUserVerified
+                IsUserVerified = user.IsUserVerified,
+                Role = user.Role 
             });
         }
 

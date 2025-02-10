@@ -15,7 +15,8 @@ export class RegisterComponent {
   credentials = {
     name: '',
     email: '',
-    password: ''
+    password: '',
+    role: 'Client',
   };
 
   @Output() loginClicked = new EventEmitter<void>();
@@ -33,7 +34,7 @@ export class RegisterComponent {
       error: (error) => {
         console.error('Registration failed', error);
         alert('Registration failed. Please try again.');
-      }
+      },
     });
   }
 

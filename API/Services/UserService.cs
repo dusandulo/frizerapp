@@ -1,5 +1,6 @@
 using API.Data;
 using API.DTOs;
+using API.Enums;
 using API.Interfaces;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +18,12 @@ namespace API.Services
             _emailService = emailService;
         }
 
-        public async Task<User> Register(RegisterDto registerDto)
+       public async Task<User> Register(RegisterDto registerDto)
         {
+            if (!Enum.TryParse(registerDto.Role.ToString(), out RoleEnum role))
+                {
+                    throw new ArgumentException("Invalid role");
+                }
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
             var otp = GenerateOTP();
 
@@ -27,6 +32,7 @@ namespace API.Services
                 Email = registerDto.Email.ToLower(),
                 Name = registerDto.Name,
                 PasswordHash = passwordHash,
+                Role = role, 
                 CreatedAt = DateTime.UtcNow,
                 OTP = otp,
                 OTPExpiration = DateTime.UtcNow.AddMinutes(10),
