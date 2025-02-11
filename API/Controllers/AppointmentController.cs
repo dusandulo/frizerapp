@@ -15,14 +15,12 @@ namespace API.Controllers
             _appointmentService = appointmentService;
         }
 
-        [Authorize]
         [HttpGet("calendar")]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetCalendar(DateTime start, DateTime end)
         {
             var appointments = await _appointmentService.GetCalendarAppointments(start, end);
             return Ok(appointments);
         }
-        [Authorize]
         [HttpPost("book/{appointmentId}")]
         public async Task<ActionResult<Appointment>> BookAppointment(int appointmentId)
         {
@@ -48,7 +46,6 @@ namespace API.Controllers
             return Ok(appointments);
         }
 
-        [Authorize(Roles = "Stylist")]
         [HttpPost("create")]
         public async Task<ActionResult<Appointment>> CreateAppointment([FromBody] Appointment appointment)
         {

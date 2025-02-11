@@ -6,6 +6,7 @@ import { OtpComponent } from './auth/otp/otp.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { AuthGuard } from './guards/auth.guard';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { CreateAppointmentComponent } from './create-appointment/create-appointment.component';
 
 export const routes: Routes = [
   {
@@ -19,6 +20,11 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'create-appointment',
+    component: CreateAppointmentComponent,
     canActivate: [AuthGuard]
   },
   {
