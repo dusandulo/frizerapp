@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AuthComponent } from './auth/auth.component';
 import { LoginComponent } from './auth/login/login.component';
 import { OtpComponent } from './auth/otp/otp.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { AuthGuard } from './guards/auth.guard';
-import { EditProfileComponent } from './edit-profile/edit-profile.component';
-import { CreateAppointmentComponent } from './create-appointment/create-appointment.component';
+import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
+import { CreateAppointmentComponent } from './components/create-appointment/create-appointment.component';
 
 export const routes: Routes = [
   {

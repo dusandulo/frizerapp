@@ -18,12 +18,17 @@ namespace API.Services
             _emailService = emailService;
         }
 
-       public async Task<User> Register(RegisterDto registerDto)
+        public async Task<User> Register(RegisterDto registerDto)
         {
+            if (await EmailExist(registerDto.Email))
+            {
+                throw new ArgumentException("Email already exists.");
+            }
+
             if (!Enum.TryParse(registerDto.Role.ToString(), out RoleEnum role))
-                {
-                    throw new ArgumentException("Invalid role");
-                }
+            {
+                throw new ArgumentException("Invalid role");
+            }
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
             var otp = GenerateOTP();
 
@@ -32,7 +37,7 @@ namespace API.Services
                 Email = registerDto.Email.ToLower(),
                 Name = registerDto.Name,
                 PasswordHash = passwordHash,
-                Role = role, 
+                Role = role,
                 CreatedAt = DateTime.UtcNow,
                 OTP = otp,
                 OTPExpiration = DateTime.UtcNow.AddMinutes(10),
@@ -142,6 +147,11 @@ namespace API.Services
 
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<User> GetUserById(int id)
+        {
+            return await _context.Users.SingleOrDefaultAsync(x => x.Id == id);
         }
     }
 }

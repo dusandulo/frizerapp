@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CalendarOptions, EventInput } from '@fullcalendar/core';
-import { AppointmentService } from '../services/appointment.service';
+import { AppointmentService } from '../../services/appointment.service';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { Appointment } from '../models/appointment.model';
+import { Appointment } from '../../models/appointment.model';
 
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';

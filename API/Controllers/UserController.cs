@@ -30,7 +30,7 @@ namespace API.Controllers
                 Name = user.Name,
                 Token = token,
                 IsUserVerified = user.IsUserVerified,
-                Role = user.Role 
+                Role = user.Role
             });
         }
 
@@ -61,6 +61,19 @@ namespace API.Controllers
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userIdClaim == null || int.Parse(userIdClaim) != id)
                 return Unauthorized();
+
+            var currentUser = await _userService.GetUserById(id);
+            
+            if (currentUser == null)
+                return NotFound("User not found.");
+
+            if (!string.Equals(currentUser.Email, updateDto.Email, StringComparison.OrdinalIgnoreCase))
+            {
+                if (await _userService.EmailExist(updateDto.Email))
+                {
+                    return BadRequest("Email already exists.");
+                }
+            }
 
             var user = await _userService.Update(id, updateDto);
             if (user == null)

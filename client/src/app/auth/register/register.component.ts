@@ -33,8 +33,13 @@ export class RegisterComponent {
       },
       error: (error) => {
         console.error('Registration failed', error);
-        alert('Registration failed. Please try again.');
-      },
+        const errorMsg = error.error;
+        if (typeof errorMsg === 'string' && errorMsg.includes('Email already exists')) {
+          alert('This email address is already registered. Please use a different email.');
+        } else {
+          alert('Registration failed. Please try again.');
+        }
+      }
     });
   }
 

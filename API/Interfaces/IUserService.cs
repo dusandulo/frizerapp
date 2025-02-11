@@ -15,5 +15,6 @@ namespace API.Interfaces
         Task<bool> VerifyOtp(string email, string otp);
         string GenerateOTP();
         Task SendOtpMail(string email, string OtpText, string name);
+        Task<User> GetUserById(int id);
     }
 }
