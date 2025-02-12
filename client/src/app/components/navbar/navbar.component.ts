@@ -16,7 +16,11 @@ export class NavbarComponent {
   profileMenuOpen: boolean = false;
   isAdmin: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router, private eRef: ElementRef) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private eRef: ElementRef
+  ) {}
 
   ngOnInit(): void {
     this.authService.getCurrentUser().pipe(
@@ -38,12 +42,19 @@ export class NavbarComponent {
     this.router.navigate(['/edit-profile']);
     this.profileMenuOpen = false;
   }
+  openProfile() {
+    this.router.navigate(['/profile-page']);
+    this.profileMenuOpen = false;
+  }
 
  //TODO isAdmin() 
 
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: MouseEvent) {
-    if (this.profileMenuOpen && !this.eRef.nativeElement.contains(event.target)) {
+    if (
+      this.profileMenuOpen &&
+      !this.eRef.nativeElement.contains(event.target)
+    ) {
       this.profileMenuOpen = false;
     }
   }
