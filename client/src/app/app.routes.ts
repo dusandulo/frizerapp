@@ -7,31 +7,35 @@ import { RegisterComponent } from './auth/register/register.component';
 import { AuthGuard } from './guards/auth.guard';
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
 import { CreateAppointmentComponent } from './components/create-appointment/create-appointment.component';
+import { ProfilePageComponent } from './components/profile-page/profile-page.component';
 
 export const routes: Routes = [
   {
     path: 'auth',
     component: AuthComponent,
     canActivate: [AuthGuard],
-    children: [
-      { path: '', redirectTo: 'login', pathMatch: 'full' }
-    ]
+    children: [{ path: '', redirectTo: 'login', pathMatch: 'full' }],
   },
   {
     path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'create-appointment',
     component: CreateAppointmentComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'edit-profile',
     component: EditProfileComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'profile-page',
+    component: ProfilePageComponent,
+    canActivate: [AuthGuard],
   },
   { path: '', redirectTo: '/auth', pathMatch: 'full' },
-  { path: '**', redirectTo: '/auth' }
+  { path: '**', redirectTo: '/auth' },
 ];
