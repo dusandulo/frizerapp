@@ -108,7 +108,7 @@ namespace API.Controllers
             return Ok(user);
         }
 
-        [HttpGet]
+        [HttpGet("users")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
             var users = await _userService.GetUsers();

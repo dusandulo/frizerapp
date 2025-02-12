@@ -75,6 +75,7 @@ export class AuthService {
     });
     return this.http.get<any>(`${this.apiUrl}/current`, { headers });
   }
+  
 
   updateUser(userId: number, updateData: any): Observable<any> {
     const token = localStorage.getItem('token');
@@ -90,5 +91,13 @@ export class AuthService {
 
   resendOtp(email: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/resend-otp`, { email });
+  }
+
+  getUsers(): Observable<any[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<any[]>(`${this.apiUrl}/users`, { headers });
   }
 }

@@ -5,8 +5,10 @@ import { LoginComponent } from './auth/login/login.component';
 import { OtpComponent } from './auth/otp/otp.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { AuthGuard } from './guards/auth.guard';
+import { AdminGuard } from './guards/admin.guard';
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
 import { CreateAppointmentComponent } from './components/create-appointment/create-appointment.component';
+import { UserListComponent } from './components/user-list/user-list.component';
 
 export const routes: Routes = [
   {
@@ -32,6 +34,12 @@ export const routes: Routes = [
     component: EditProfileComponent,
     canActivate: [AuthGuard]
   },
+  {
+    path: 'users',
+    component: UserListComponent,
+    canActivate: [AuthGuard, AdminGuard]
+  },
+
   { path: '', redirectTo: '/auth', pathMatch: 'full' },
   { path: '**', redirectTo: '/auth' }
 ];

@@ -9,6 +9,7 @@
     <div class="hidden md:flex space-x-4">
       <a routerLink="/dashboard" class="px-3 py-2 text-gray-700 hover:bg-gray-100 transition-all duration-200">Dashboard</a>
       <a routerLink="/create-appointment" class="px-3 py-2 text-gray-700 hover:bg-gray-100 transition-all duration-200">Create Appointment</a>
+      <a *ngIf="isAdmin" routerLink="/users" class="px-3 py-2 text-gray-700 hover:bg-gray-100 transition-all duration-200">Users</a>
     </div>
     <div class="relative">
       <button (click)="toggleProfileMenu()" class="flex items-center space-x-2 text-gray-700 hover:text-gray-900 focus:outline-none transition-all duration-200">
