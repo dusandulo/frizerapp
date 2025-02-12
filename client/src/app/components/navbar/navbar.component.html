@@ -12,6 +12,13 @@
 
     <!-- Center: Navigation links -->
     <div class="hidden md:flex space-x-4">
+      <a 
+         *ngIf="isAdmin" 
+         routerLink="/users" 
+         class="px-3 py-2 text-gray-700 
+                hover:bg-gray-100 transition-all 
+                duration-200"
+         >Users</a>
       <a
         routerLink="/dashboard"
         class="px-3 py-2 text-gray-700 hover:bg-gray-100 transition-all duration-200"
