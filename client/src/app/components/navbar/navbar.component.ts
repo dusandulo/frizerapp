@@ -14,7 +14,11 @@ export class NavbarComponent {
   @Input() isLoggedIn: boolean = false;
   profileMenuOpen: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router, private eRef: ElementRef) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private eRef: ElementRef
+  ) {}
 
   toggleProfileMenu() {
     this.profileMenuOpen = !this.profileMenuOpen;
@@ -28,10 +32,17 @@ export class NavbarComponent {
     this.router.navigate(['/edit-profile']);
     this.profileMenuOpen = false;
   }
+  openProfile() {
+    this.router.navigate(['/profile-page']);
+    this.profileMenuOpen = false;
+  }
 
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: MouseEvent) {
-    if (this.profileMenuOpen && !this.eRef.nativeElement.contains(event.target)) {
+    if (
+      this.profileMenuOpen &&
+      !this.eRef.nativeElement.contains(event.target)
+    ) {
       this.profileMenuOpen = false;
     }
   }
