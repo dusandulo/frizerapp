@@ -25,7 +25,8 @@ namespace API.Controllers
         public async Task<ActionResult<Appointment>> BookAppointment(int appointmentId)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userIdClaim == null) return Unauthorized();
+            if (userIdClaim == null)
+                return Unauthorized();
             int clientId = int.Parse(userIdClaim);
 
             var appointment = await _appointmentService.BookAppointment(appointmentId, clientId);
@@ -44,6 +45,13 @@ namespace API.Controllers
 
             var appointments = await _appointmentService.GetAppointmentsByStylist(stylistId);
             return Ok(appointments);
+        }
+
+        [HttpGet("getstylists")]
+        public async Task<ActionResult<IEnumerable<object>>> GetStylists()
+        {
+            var stylists = await _appointmentService.GetStylists();
+            return Ok(stylists);
         }
 
         [HttpPost("create")]

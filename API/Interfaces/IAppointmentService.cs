@@ -8,5 +8,6 @@ namespace API.Interfaces
         Task<Appointment> BookAppointment(int appointmentId, int clientId);
         Task<IEnumerable<Appointment>> GetAppointmentsByStylist(int stylistId);
         Task<Appointment> CreateAppointment(Appointment appointment);
+        Task<IEnumerable<object>> GetStylists();
     }
 }

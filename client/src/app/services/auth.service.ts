@@ -100,4 +100,8 @@ export class AuthService {
     });
     return this.http.get<any[]>(`${this.apiUrl}/users`, { headers });
   }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
 }

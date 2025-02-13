@@ -1,6 +1,7 @@
 using API.Data;
 using API.Interfaces;
 using API.Models;
+using API.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services
@@ -39,6 +40,14 @@ namespace API.Services
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
             return appointment;
+        }
+
+        public async Task<IEnumerable<object>> GetStylists()
+        {
+            return await _context.Users
+                .Where(u => u.Role == RoleEnum.Stylist)
+                .Select(u => new { id = u.Id.ToString(), name = u.Name })
+                .ToListAsync();
         }
     }
 }

@@ -47,8 +47,6 @@ export class NavbarComponent {
     this.profileMenuOpen = false;
   }
 
- //TODO isAdmin() 
-
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: MouseEvent) {
     if (

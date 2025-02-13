@@ -16,6 +16,7 @@ export class CreateAppointmentComponent implements OnInit {
   appointmentForm!: FormGroup;
   availableTimes: string[] = [];
   filteredEndTimes: string[] = [];
+  stylists: { id: number; name: string }[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -33,6 +34,9 @@ export class CreateAppointmentComponent implements OnInit {
     });
     this.appointmentForm.get('startTime')?.valueChanges.subscribe(() => {
       this.updateEndTimeOptions();
+    });
+    this.appointmentService.getStylists().subscribe((data) => {
+      this.stylists = data;
     });
   }
 

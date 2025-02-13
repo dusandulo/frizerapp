@@ -43,13 +43,16 @@
   
         <!-- Stylist ID -->
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Stylist ID:</label>
-          <input 
-            type="number" 
-            formControlName="stylistId" 
-            class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition" 
+          <label class="block text-gray-700 font-semibold mb-2">Select Stylist:</label>
+          <select 
+            formControlName="stylistId"
+            class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
             required
-          />
+          >
+            <option *ngFor="let stylist of stylists" [value]="stylist.id">
+              {{ stylist.name }}
+            </option>
+          </select>
         </div>
   
         <!-- Submit Button -->
