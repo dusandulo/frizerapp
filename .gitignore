@@ -80,3 +80,7 @@ client/.angular/cache/19.1.6/client/.tsbuildinfo
 client/.angular/cache/19.1.6/client/vite/deps/_metadata.json
 client/.angular/cache/19.1.6/client/vite/deps_ssr/_metadata.json
 
+# Angular cache (recursive)
+client/.angular/cache/
+client/.angular/cache/19.1.6/
+
