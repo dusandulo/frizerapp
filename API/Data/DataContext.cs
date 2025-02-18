@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,5 +10,14 @@ namespace API.Data
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<StylingServices> Services { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.StylingServices)
+                .WithMany()
+                .HasForeignKey(a => a.StylingServicesId);
+        }
     }
 }

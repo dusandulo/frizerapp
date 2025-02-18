@@ -8,5 +8,7 @@ namespace API.Models
         public int? ClientId { get; set; }
         public int StylistId { get; set; }
         public bool IsBooked { get; set; }
+        public int? StylingServicesId { get; set; }
+        public StylingServices StylingServices { get; set; }
     }
 }
