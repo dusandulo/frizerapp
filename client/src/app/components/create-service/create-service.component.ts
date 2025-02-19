@@ -1,3 +1,4 @@
+// client/src/app/components/create-service/create-service.component.ts
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -26,7 +27,8 @@ export class CreateServiceComponent implements OnInit {
   ngOnInit(): void {
     this.serviceForm = this.fb.group({
       type: ['', Validators.required],
-      price: [0, [Validators.required, Validators.min(0)]]
+      price: [0, [Validators.required, Validators.min(0)]],
+      duration: [30, [Validators.required, Validators.min(1)]]
     });
   }
 

@@ -1,6 +1,5 @@
 <div class="min-h-screen flex flex-col items-center justify-center p-6 animate-gradient">
   
-  <!-- CREATE SERVICE FORM -->
   <div class="bg-white bg-opacity-90 backdrop-blur-xl p-8 rounded-2xl shadow-2xl w-full max-w-lg transform transition-all duration-300 hover:shadow-3xl animate-fade-in">
     
     <h2 class="text-3xl font-extrabold text-center text-gray-900 mb-6">Create Service</h2>
@@ -30,6 +29,17 @@
           Price (RSD)
         </label>
       </div>
+      <div class="relative">
+        <input 
+          type="number" 
+          formControlName="duration" 
+          class="peer w-full px-4 pt-5 pb-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+          required
+        />
+        <label class="absolute left-4 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600">
+          Duration (minutes)
+        </label>
+      </div>
 
       <div *ngIf="errorMessage" class="mb-4 text-red-600 text-center animate-fade-in">{{ errorMessage }}</div>
       <div *ngIf="successMessage" class="mb-4 text-green-600 text-center animate-fade-in">{{ successMessage }}</div>
@@ -43,7 +53,6 @@
     </form>
   </div>
 
-  <!-- SERVICE LIST COMPONENT -->
   <div class="w-full mt-10">
     <app-service-list></app-service-list>
   </div>

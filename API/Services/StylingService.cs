@@ -46,6 +46,7 @@ namespace API.Services
 
             service.Type = updatedService.Type;
             service.Price = updatedService.Price;
+            service.Duration = updatedService.Duration;
 
             await _context.SaveChangesAsync();
             return service;
