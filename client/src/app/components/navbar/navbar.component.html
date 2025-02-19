@@ -19,17 +19,18 @@
         Users
       </a>
       <a
-        routerLink="/dashboard"
-        class="px-4 py-2 text-gray-700 hover:text-blue-800 hover:bg-gray-50 rounded-lg transition-all duration-200"
-      >
-        Dashboard
-      </a>
-      <a
         *ngIf="isAdmin"
         routerLink="/create-appointment"
         class="px-4 py-2 text-gray-700 hover:text-blue-800 hover:bg-gray-50 rounded-lg transition-all duration-200"
       >
         Create Appointment
+      </a>
+      <a
+        *ngIf="isAdmin"
+        routerLink="/create-service"
+        class="px-4 py-2 text-gray-700 hover:text-blue-800 hover:bg-gray-50 rounded-lg transition-all duration-200"
+      >
+        Create Service
       </a>
     </div>
 

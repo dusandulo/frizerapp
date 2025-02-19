@@ -1,0 +1,57 @@
+<div class="fixed inset-0 backdrop-blur-sm bg-opacity-10 flex items-center justify-center transition-opacity" *ngIf="service">
+    <div class="bg-white bg-opacity-90 backdrop-blur-xl p-6 rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 animate-fade-in">
+      
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="text-2xl font-bold text-gray-900">Edit Service</h3>
+        <button (click)="onCancel()" class="text-gray-500 hover:text-gray-700 transition">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+  
+      <form [formGroup]="editForm" class="space-y-6 mt-4">
+        
+        <div class="relative">
+          <input 
+            type="text" 
+            formControlName="type" 
+            class="peer w-full px-4 pt-5 pb-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+            required
+          />
+          <label class="absolute left-4 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600">
+            Service Type
+          </label>
+        </div>
+  
+        <div class="relative">
+          <input 
+            type="number" 
+            formControlName="price" 
+            class="peer w-full px-4 pt-5 pb-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+            required
+          />
+          <label class="absolute left-4 top-2 text-gray-500 text-sm transition-all peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600">
+            Price (RSD)
+          </label>
+        </div>
+  
+      </form>
+  
+      <div class="flex justify-between mt-6">
+        <button
+          class="flex items-center justify-center w-1/2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 rounded-lg transition transform active:scale-95 shadow-md"
+          (click)="onSave()"
+          [disabled]="editForm.invalid"
+        >
+          <i class="fas fa-save mr-2"></i> Save
+        </button>
+        <button
+          class="flex items-center justify-center w-1/2 bg-red-500 hover:bg-red-600 text-white font-bold py-2 rounded-lg transition transform active:scale-95 shadow-md ml-2"
+          (click)="onCancel()"
+        >
+          <i class="fas fa-times-circle mr-2"></i> Cancel
+        </button>
+      </div>
+  
+    </div>
+  </div>
+  

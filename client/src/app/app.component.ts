@@ -23,9 +23,5 @@ export class AppComponent implements OnInit {
     this.authService.authState$.subscribe((state: AuthState) => {
       this.authState = state;
     });
-
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/dashboard']);
-    }
   }
 }

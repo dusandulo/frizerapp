@@ -7,6 +7,7 @@ import { EditProfileComponent } from './components/edit-profile/edit-profile.com
 import { CreateAppointmentComponent } from './components/create-appointment/create-appointment.component';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { ProfilePageComponent } from './components/profile-page/profile-page.component';
+import { CreateServiceComponent } from './components/create-service/create-service.component';
 
 export const routes: Routes = [
   {
@@ -18,11 +19,6 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'create-appointment',
-    component: CreateAppointmentComponent,
     canActivate: [AuthGuard],
   },
   {
@@ -39,6 +35,16 @@ export const routes: Routes = [
     path: 'users',
     component: UserListComponent,
     canActivate: [AuthGuard, AdminGuard]
+  },
+  {
+    path: 'create-appointment',
+    component: CreateAppointmentComponent,
+    canActivate: [AuthGuard, AdminGuard],
+  },
+  {
+    path: 'create-service',
+    component: CreateServiceComponent,
+    canActivate: [AuthGuard, AdminGuard],
   },
 
   { path: '', redirectTo: '/auth', pathMatch: 'full' },

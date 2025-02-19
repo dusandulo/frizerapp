@@ -1,0 +1,19 @@
+.container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+button {
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+}
+
+i {
+  font-size: 1rem;
+}
+
+input:focus + label {
+  color: #2563eb;
+  transform: translateY(-10px);
+}
