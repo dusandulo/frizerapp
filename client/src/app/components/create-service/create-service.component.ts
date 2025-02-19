@@ -3,11 +3,12 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { StylingService } from '../../services/styling.service';
 import { Router } from '@angular/router';
+import { ServiceListComponent } from "../service-list/service-list.component";
 
 @Component({
   selector: 'app-create-service',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, ServiceListComponent],
   templateUrl: './create-service.component.html',
   styleUrls: ['./create-service.component.scss']
 })
@@ -35,7 +36,7 @@ export class CreateServiceComponent implements OnInit {
       this.stylingService.createService(serviceData).subscribe({
         next: (res) => {
           this.successMessage = 'Service created successfully!';
-          setTimeout(() => this.router.navigate(['/dashboard']), 1500);
+            setTimeout(() => window.location.reload(), 1000);
         },
         error: (err) => {
           this.errorMessage = 'Failed to create service.';
