@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Route("[controller]")]
+    [ApiController]
+    [Route("api/[controller]")]
     public class StylingServicesController : ControllerBase
     {
         private readonly IStylingService _stylingService;
@@ -27,7 +28,7 @@ namespace API.Controllers
             if (service == null) return NotFound();
             return Ok(service);
         }
-        [HttpPost]
+        [HttpPost("createservice")]
         public async Task<ActionResult<StylingServices>> Create(StylingServices service)
         {
             var created = await _stylingService.CreateService(service);
