@@ -22,7 +22,8 @@ export class EditServiceModalComponent implements OnInit {
   ngOnInit(): void {
     this.editForm = this.fb.group({
       type: [this.service?.type || '', Validators.required],
-      price: [this.service?.price || 0, [Validators.required, Validators.min(0)]]
+      price: [this.service?.price || 0, [Validators.required, Validators.min(0)]],
+      duration: [this.service?.duration || 30, [Validators.required, Validators.min(1)]]
     });
   }
 
@@ -31,7 +32,8 @@ export class EditServiceModalComponent implements OnInit {
       const updatedService: StylingServices = {
         id: this.service.id,
         type: this.editForm.value.type,
-        price: this.editForm.value.price
+        price: this.editForm.value.price,
+        duration: this.editForm.value.duration
       };
       this.save.emit(updatedService);
     }
