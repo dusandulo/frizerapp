@@ -1,34 +1,57 @@
 <div class="container mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-6 text-gray-800">Users</h1>
-    
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-      <table class="min-w-full border-collapse">
-        <thead class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white">
-          <tr class="text-left text-sm font-semibold uppercase">
-            <th class="px-6 py-3">ID</th>
-            <th class="px-6 py-3">Name</th>
-            <th class="px-6 py-3">Email</th>
-            <th class="px-6 py-3">Verification</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let user of users" 
-              class="border-b transition-all duration-300 hover:bg-gray-100 hover:scale-[1.02]">
-            <td class="px-6 py-4 text-gray-700 font-medium">{{ user.id }}</td>
-            <td class="px-6 py-4 text-gray-700">{{ user.name }}</td>
-            <td class="px-6 py-4 text-gray-600">{{ user.email }}</td>
-            <td class="px-6 py-4">
-              <span class="px-3 py-1 rounded-full text-xs font-semibold"
-                    [ngClass]="{
-                      'bg-green-100 text-green-800': user.isUserVerified,
-                      'bg-red-100 text-red-800': !user.isUserVerified
-                    }">
-                {{ user.isUserVerified ? 'VERIFIED' : 'NOT VERIFIED' }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <h1 class="text-3xl font-bold mb-6 text-gray-800">Users</h1>
   
+  <div class="bg-white shadow-lg rounded-xl overflow-hidden">
+    <table class="min-w-full border-collapse">
+      <thead class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white">
+        <tr class="text-left text-sm font-semibold uppercase">
+          <th class="px-6 py-4">ID</th>
+          <th class="px-6 py-4">Name</th>
+          <th class="px-6 py-4">Email</th>
+          <th class="px-6 py-4">Verification</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users" 
+            class="border-b transition-all duration-300 hover:bg-gray-200 hover:scale-[1.02] cursor-pointer"
+            (click)="openUserModal(user)">
+          <td class="px-6 py-4 text-gray-700 font-medium">{{ user.id }}</td>
+          <td class="px-6 py-4 text-gray-700">{{ user.name }}</td>
+          <td class="px-6 py-4 text-gray-600">{{ user.email }}</td>
+          <td class="px-6 py-4 flex items-center gap-2">
+            <span 
+              class="px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-2"
+              [ngClass]="{
+                'bg-green-100 text-green-800': user.isUserVerified,
+                'bg-red-100 text-red-800': !user.isUserVerified
+              }">
+              <i [ngClass]="user.isUserVerified ? 'fas fa-check-circle text-green-500' : 'fas fa-times-circle text-red-500'"></i>
+              {{ user.isUserVerified ? 'VERIFIED' : 'NOT VERIFIED' }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+<!--MODAL-->
+<div *ngIf="selectedUser" class="fixed inset-0 backdrop-blur-sm bg-opacity-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative animate-fade-in">
+    <button class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl" (click)="closeUserModal()">
+      &times;
+    </button>
+    <h2 class="text-2xl font-bold text-gray-900 mb-4">User Details</h2>
+    <p><strong>ID:</strong> {{ selectedUser.id }}</p>
+    <p><strong>Name:</strong> {{ selectedUser.name }}</p>
+    <p><strong>Email:</strong> {{ selectedUser.email }}</p>
+    <p><strong>Verification:</strong> 
+      <span [ngClass]="selectedUser.isUserVerified ? 'text-green-600' : 'text-red-600'">
+        {{ selectedUser.isUserVerified ? 'VERIFIED' : 'NOT VERIFIED' }}
+      </span>
+    </p>
+  </div>
+</div>

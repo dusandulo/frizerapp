@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class UserListComponent implements OnInit {
   users: any[] = [];
+  selectedUser: any = null;
 
   constructor(private authService: AuthService) {}
 
@@ -17,5 +18,13 @@ export class UserListComponent implements OnInit {
     this.authService.getUsers().subscribe(users => {
       this.users = users;
     });
+  }
+
+  openUserModal(user: any): void {
+    this.selectedUser = user;
+  }
+
+  closeUserModal(): void {
+    this.selectedUser = null;
   }
 }
