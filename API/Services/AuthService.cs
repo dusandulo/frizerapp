@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using API.Interfaces;
 using API.Models;
@@ -16,7 +17,7 @@ namespace API.Services
             _config = config;
         }
 
-        public string CreateToken(User user)
+        public (string AccessToken, string RefreshToken) CreateTokens(User user)
         {
             var claims = new List<Claim>
             {
@@ -31,14 +32,27 @@ namespace API.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddMinutes(1),
                 SigningCredentials = creds,
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
+            var accessToken = tokenHandler.WriteToken(token);
 
-            return tokenHandler.WriteToken(token);
+            var refreshToken = GenerateRefreshToken();
+
+            return (accessToken, refreshToken);
+        }
+
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
         }
     }
 }

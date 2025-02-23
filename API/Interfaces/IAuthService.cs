@@ -4,6 +4,7 @@ namespace API.Interfaces
 {
     public interface IAuthService
     {
-        string CreateToken(User user);
+        (string AccessToken, string RefreshToken) CreateTokens(User user);
+        public string GenerateRefreshToken();
     }
 }

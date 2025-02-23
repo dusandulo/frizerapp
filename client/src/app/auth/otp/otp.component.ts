@@ -20,10 +20,13 @@ export class OtpComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    this.email = localStorage.getItem('emailForOTP') || '';
-    if (!this.email) {
-      this.router.navigate(['/auth/register']); 
-    }
+    this.authService.userEmail$.subscribe(email => {
+      if (email) {
+        this.email = email;
+      } else {
+        this.router.navigate(['/auth/register']);
+      }
+    });
   }
 
   verifyOtp() {
@@ -32,6 +35,7 @@ export class OtpComponent implements OnInit {
       alert(this.errorMessage);
       return;
     }
+    
     this.authService.verifyOtp(this.email, this.otp).subscribe({
       next: (response) => {
         console.log('OTP verified successfully', response);

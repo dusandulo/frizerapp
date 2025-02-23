@@ -1,11 +1,14 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
-import { AuthGuard } from './guards/auth.guard';
-import { FullCalendarModule } from '@fullcalendar/angular';
-
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { tokenInterceptor } from './services/token.interceptor';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideHttpClient(), AuthGuard, FullCalendarModule]
+  providers: [
+    provideRouter(routes),
+    provideHttpClient(
+      withInterceptors([tokenInterceptor])
+    )
+  ]
 };

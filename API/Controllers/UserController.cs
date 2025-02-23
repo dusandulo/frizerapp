@@ -21,14 +21,21 @@ namespace API.Controllers
                 return BadRequest("Email already exists");
 
             var user = await _userService.Register(registerDto);
-            var token = _authService.CreateToken(user);
+            var (accessToken, refreshToken) = _authService.CreateTokens(user);
+
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            await _userService.UpdateUser(user);
+
+            await _userService.SendOtpMail(user.Email, user.OTP, user.Name);
 
             return Ok(new UserDto
             {
                 Id = user.Id,
                 Email = user.Email,
                 Name = user.Name,
-                Token = token,
+                Token = accessToken,
+                RefreshToken = refreshToken,
                 IsUserVerified = user.IsUserVerified,
                 Role = user.Role
             });
@@ -42,15 +49,28 @@ namespace API.Controllers
             if (user == null)
                 return Unauthorized("Invalid email or password");
 
-            var token = _authService.CreateToken(user);
+            var (accessToken, refreshToken) = _authService.CreateTokens(user);
+
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            await _userService.UpdateUser(user);
+
+            Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false, // change to true when using HTTPS
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(7)
+            });
 
             return Ok(new UserDto
             {
                 Id = user.Id,
                 Email = user.Email,
                 Name = user.Name,
-                Token = token,
-                IsUserVerified = user.IsUserVerified
+                Token = accessToken,
+                IsUserVerified = user.IsUserVerified,
+                Role = user.Role
             });
         }
 
@@ -63,7 +83,7 @@ namespace API.Controllers
                 return Unauthorized();
 
             var currentUser = await _userService.GetUserById(id);
-            
+
             if (currentUser == null)
                 return NotFound("User not found.");
 
@@ -156,5 +176,61 @@ namespace API.Controllers
 
             return Ok(new { message = "OTP resent successfully." });
         }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
+            {
+                return Unauthorized("Refresh token is missing.");
+            }
+
+            var user = await _userService.GetUserByRefreshToken(refreshToken);
+
+            if (user == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
+            {
+                return Unauthorized("Invalid or expired refresh token.");
+            }
+
+            var (newAccessToken, newRefreshToken) = _authService.CreateTokens(user);
+
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            await _userService.UpdateUser(user);
+
+            Response.Cookies.Append("refreshToken", newRefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false, // change to true when using HTTPS
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(7)
+            });
+
+            return Ok(new
+            {
+                AccessToken = newAccessToken
+            });
+        }
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
+            {
+                return BadRequest("No refresh token found.");
+            }
+
+            var user = await _userService.GetUserByRefreshToken(refreshToken);
+            if (user != null)
+            {
+                user.RefreshToken = null;
+                user.RefreshTokenExpiryTime = DateTime.UtcNow;
+                await _userService.UpdateUser(user);
+            }
+
+            Response.Cookies.Delete("refreshToken");
+
+            return Ok(new { message = "Logged out successfully." });
+        }
+
     }
 }

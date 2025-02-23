@@ -16,5 +16,6 @@ namespace API.Interfaces
         string GenerateOTP();
         Task SendOtpMail(string email, string OtpText, string name);
         Task<User> GetUserById(int id);
+        Task<User> GetUserByRefreshToken(string refreshToken);
     }
 }

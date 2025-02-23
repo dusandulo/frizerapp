@@ -14,5 +14,6 @@ namespace API.DTOs
     public string Token { get; set; }
     public bool IsUserVerified { get; set; }
     public RoleEnum Role { get; set; } 
+    public string RefreshToken { get; set; }
 }
 }

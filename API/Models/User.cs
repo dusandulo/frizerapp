@@ -13,5 +13,7 @@ namespace API.Models
         public string OTP { get; set; }
         public DateTime? OTPExpiration { get; set; }
         public bool IsUserVerified { get; set; }
+        public string RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
     }
 }

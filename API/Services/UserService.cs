@@ -12,10 +12,13 @@ namespace API.Services
         private readonly DataContext _context;
         private readonly IEmailService _emailService;
 
-        public UserService(DataContext context, IEmailService emailService)
+        private readonly IAuthService _authService;
+
+        public UserService(DataContext context, IEmailService emailService, IAuthService authService)
         {
             _context = context;
             _emailService = emailService;
+            _authService = authService;
         }
 
         public async Task<User> Register(RegisterDto registerDto)
@@ -54,12 +57,17 @@ namespace API.Services
 
         public async Task<User> Login(LoginDto loginDto)
         {
-            var user = await _context.Users
-                .SingleOrDefaultAsync(x => x.Email == loginDto.Email.ToLower());
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.Email == loginDto.Email.ToLower());
 
             if (user == null) return null;
 
             if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash)) return null;
+
+            var refreshToken = _authService.GenerateRefreshToken();
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(10);
+
+            await _context.SaveChangesAsync();
 
             return user;
         }
@@ -153,5 +161,11 @@ namespace API.Services
         {
             return await _context.Users.SingleOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task<User> GetUserByRefreshToken(string refreshToken)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+        }
+
     }
 }
