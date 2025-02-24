@@ -1,8 +1,9 @@
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 import { AuthResponse } from '../models/auth-response.model';
 import { AuthState } from '../enums/auth-state.enum';
 
@@ -32,6 +33,7 @@ export class AuthService {
     return this.http.post<any>(`${this.apiUrl}/register`, credentials).pipe(
       tap(() => {
         this.setAuthState(AuthState.OTP);
+        this.router.navigate(['/auth/otp']);
       })
     );
   }
@@ -51,15 +53,37 @@ export class AuthService {
       })
     );
   }
-  
 
-  logout(): void {
-    localStorage.clear();
-    this.setAuthState(AuthState.LOGIN);
-    this.router.navigate(['/auth']);
+  refreshToken(): Observable<string> {
+    return this.http
+      .post<{ token: string }>(`${this.apiUrl}/refresh-token`, {}, { withCredentials: true })
+      .pipe(
+        map((response) => response.token),
+        tap((newToken) => {
+          localStorage.setItem('token', newToken);
+        })
+      );
   }
 
-  setAuthState(state: AuthState) {
+  logout(): void {
+    this.http
+      .post(`${this.apiUrl}/logout`, {}, { withCredentials: true })
+      .subscribe({
+        next: () => {
+          console.log('Logout uspešan na backend-u');
+        },
+        error: (err) => {
+          console.error('Greška pri logout-u na backend-u:', err);
+        },
+        complete: () => {
+          localStorage.clear();
+          this.setAuthState(AuthState.LOGIN);
+          this.router.navigate(['/auth']);
+        },
+      });
+  }
+
+  setAuthState(state: AuthState): void {
     this.authStateSubject.next(state);
     this.saveAuthState(state);
   }
@@ -71,22 +95,29 @@ export class AuthService {
   getCurrentUser(): Observable<any> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
     return this.http.get<any>(`${this.apiUrl}/current`, { headers });
   }
-  
 
   updateUser(userId: number, updateData: any): Observable<any> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
-    return this.http.put<any>(`${this.apiUrl}/${userId}`, updateData, { headers: headers });
+    return this.http.put<any>(`${this.apiUrl}/${userId}`, updateData, { headers });
   }
 
   verifyOtp(email: string, otp: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/verify-otp`, { email, otp });
+    return this.http.post<any>(`${this.apiUrl}/verify-otp`, { email, otp }).pipe(
+      tap((response) => {
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+          this.setAuthState(AuthState.AUTHENTICATED);
+          this.router.navigate(['/dashboard']);
+        }
+      })
+    );
   }
 
   resendOtp(email: string): Observable<any> {
@@ -96,7 +127,7 @@ export class AuthService {
   getUsers(): Observable<any[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
     return this.http.get<any[]>(`${this.apiUrl}/users`, { headers });
   }
