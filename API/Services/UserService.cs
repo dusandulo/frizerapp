@@ -153,5 +153,37 @@ namespace API.Services
         {
             return await _context.Users.SingleOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task<RefreshToken> GenerateRefreshTokenAsync(int userId)
+        {
+            var refreshToken = new RefreshToken
+            {
+                Token = Guid.NewGuid().ToString(),
+                UserId = userId,
+                ExpiryDate = DateTime.UtcNow.AddDays(7), 
+                IsRevoked = false
+            };
+            _context.RefreshTokens.Add(refreshToken);
+            await _context.SaveChangesAsync();
+            return refreshToken;
+        }
+
+        public async Task<RefreshToken> GetRefreshTokenAsync(string token)
+        {
+            return await _context.RefreshTokens
+                .Include(rt => rt.User)
+                .SingleOrDefaultAsync(rt => rt.Token == token);
+        }
+
+        public async Task RevokeRefreshTokenAsync(string token)
+        {
+            var refreshToken = await _context.RefreshTokens
+                .SingleOrDefaultAsync(rt => rt.Token == token);
+            if (refreshToken != null)
+            {
+                refreshToken.IsRevoked = true;
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

@@ -15,20 +15,18 @@ namespace API.Controllers
         private readonly IAuthService _authService = authService;
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(RegisterDto registerDto)
+        public async Task<ActionResult> Register(RegisterDto registerDto)
         {
             if (await _userService.EmailExist(registerDto.Email))
                 return BadRequest("Email already exists");
 
             var user = await _userService.Register(registerDto);
-            var token = _authService.CreateToken(user);
-
-            return Ok(new UserDto
+            return Ok(new
             {
+                Message = "Registracija uspešna, proverite email za OTP",
                 Id = user.Id,
                 Email = user.Email,
                 Name = user.Name,
-                Token = token,
                 IsUserVerified = user.IsUserVerified,
                 Role = user.Role
             });
@@ -38,11 +36,23 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await _userService.Login(loginDto);
-
             if (user == null)
                 return Unauthorized("Invalid email or password");
 
+            if (!user.IsUserVerified)
+            {
+                return Ok(new UserDto
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Name = user.Name,
+                    IsUserVerified = user.IsUserVerified
+                });
+            }
+
             var token = _authService.CreateToken(user);
+            var refreshToken = await _userService.GenerateRefreshTokenAsync(user.Id);
+            SetRefreshTokenCookie(refreshToken);
 
             return Ok(new UserDto
             {
@@ -54,6 +64,17 @@ namespace API.Controllers
             });
         }
 
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (!string.IsNullOrEmpty(refreshToken))
+                await _userService.RevokeRefreshTokenAsync(refreshToken);
+
+            Response.Cookies.Delete("refreshToken");
+            return Ok();
+        }
+
         [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult<UserDto>> Update(int id, UpdateUserDto updateDto)
@@ -63,7 +84,7 @@ namespace API.Controllers
                 return Unauthorized();
 
             var currentUser = await _userService.GetUserById(id);
-            
+
             if (currentUser == null)
                 return NotFound("User not found.");
 
@@ -127,13 +148,15 @@ namespace API.Controllers
         public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpDto otpDto)
         {
             var isVerified = await _userService.VerifyOtp(otpDto.Email, otpDto.OTP);
-
             if (!isVerified)
-            {
                 return BadRequest(new { message = "Invalid or expired OTP." });
-            }
 
-            return Ok(new { message = "OTP verified successfully." });
+            var user = await _userService.GetUserByEmail(otpDto.Email);
+            var token = _authService.CreateToken(user);
+            var refreshToken = await _userService.GenerateRefreshTokenAsync(user.Id);
+            SetRefreshTokenCookie(refreshToken);
+
+            return Ok(new { message = "OTP verified successfully.", token = token });
         }
 
         [HttpPost("resend-otp")]
@@ -155,6 +178,41 @@ namespace API.Controllers
             await _userService.SendOtpMail(user.Email, otp, user.Name);
 
             return Ok(new { message = "OTP resent successfully." });
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(refreshToken))
+                return Unauthorized("No refresh token provided");
+
+            var refreshTokenEntity = await _userService.GetRefreshTokenAsync(refreshToken);
+            if (refreshTokenEntity == null || refreshTokenEntity.IsRevoked || refreshTokenEntity.ExpiryDate < DateTime.UtcNow)
+                return Unauthorized("Invalid or expired refresh token");
+
+            var user = await _userService.GetUserById(refreshTokenEntity.UserId);
+            if (user == null)
+                return NotFound("User not found");
+
+            var newAccessToken = _authService.CreateToken(user);
+            var newRefreshToken = await _userService.GenerateRefreshTokenAsync(user.Id);
+            SetRefreshTokenCookie(newRefreshToken);
+            await _userService.RevokeRefreshTokenAsync(refreshToken);
+
+            return Ok(new { Token = newAccessToken });
+        }
+
+        // Helper methods
+        private void SetRefreshTokenCookie(RefreshToken refreshToken)
+        {
+            Response.Cookies.Append("refreshToken", refreshToken.Token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false, // change to true if using HTTPS
+                SameSite = SameSiteMode.Strict,
+                Expires = refreshToken.ExpiryDate
+            });
         }
     }
 }
