@@ -10,51 +10,72 @@ import { AuthState } from '../../enums/auth-state.enum';
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './otp.component.html',
-  styleUrl: './otp.component.scss'
+  styleUrls: ['./otp.component.scss']
 })
 export class OtpComponent implements OnInit {
   otp: string = '';
   email: string = '';
   errorMessage: string | null = null;
+  successMessage: string | null = null;
+  isLoading: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.email = localStorage.getItem('emailForOTP') || '';
     if (!this.email) {
-      this.router.navigate(['/auth/register']); 
+      this.router.navigate(['/auth/register']);
     }
   }
 
   verifyOtp() {
     if (this.otp.trim().length !== 6) {
       this.errorMessage = 'OTP must be 6 digits.';
-      alert(this.errorMessage);
       return;
     }
+
+    this.isLoading = true;
+    this.successMessage = null;
+    this.errorMessage = null;
+
     this.authService.verifyOtp(this.email, this.otp).subscribe({
       next: (response) => {
         console.log('OTP verified successfully', response);
-        this.authService.setAuthState(AuthState.LOGIN);
-        this.router.navigate(['/dashboard']);
+        this.isLoading = false;
+        this.successMessage = 'OTP verified! Redirecting to dashboard...';
+        setTimeout(() => {
+          this.authService.setAuthState(AuthState.LOGIN);
+          this.router.navigate(['/dashboard']).then(() => {
+            this.successMessage = null; 
+          });
+        }, 2000); 
       },
       error: (error) => {
         console.error('OTP verification failed', error);
+        this.isLoading = false;
         this.errorMessage = 'Invalid OTP. Please try again.';
-        alert(this.errorMessage);
       }
     });
   }
 
   resendOtp() {
+    this.isLoading = true;
+    this.successMessage = null;
+    this.errorMessage = null;
+
     this.authService.resendOtp(this.email).subscribe({
       next: (response) => {
         console.log('OTP resent successfully', response);
-        alert('OTP resent successfully. Please check your email.');
+        this.isLoading = false;
+        this.successMessage = 'OTP resent successfully! Check your email.';
+        setTimeout(() => {
+          this.successMessage = null; 
+        }, 2000);
       },
       error: (error) => {
         console.error('Resend OTP failed', error);
-        alert('Failed to resend OTP. Please try again.');
+        this.isLoading = false;
+        this.errorMessage = 'Failed to resend OTP. Please try again.';
       }
     });
   }
@@ -67,5 +88,4 @@ export class OtpComponent implements OnInit {
     }
     return true;
   }
-
 }

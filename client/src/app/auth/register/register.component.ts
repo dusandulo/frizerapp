@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss',
+  styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent {
   credentials = {
@@ -18,6 +18,9 @@ export class RegisterComponent {
     password: '',
     role: 'Client',
   };
+  isLoading: boolean = false;
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
 
   @Output() loginClicked = new EventEmitter<void>();
   @Output() otpClicked = new EventEmitter<void>();
@@ -25,19 +28,29 @@ export class RegisterComponent {
   constructor(private router: Router, private authService: AuthService) {}
 
   register() {
+    this.isLoading = true;
+    this.successMessage = null;
+    this.errorMessage = null;
+
     this.authService.register(this.credentials).subscribe({
       next: (response) => {
         console.log('Registration successful', response);
+        this.isLoading = false;
+        this.successMessage = 'Registration successful! Redirecting to OTP...';
         localStorage.setItem('emailForOTP', this.credentials.email);
-        this.otpClicked.emit();
+        setTimeout(() => {
+          this.otpClicked.emit();
+          this.successMessage = null;
+        }, 2000); 
       },
       error: (error) => {
         console.error('Registration failed', error);
+        this.isLoading = false;
         const errorMsg = error.error;
         if (typeof errorMsg === 'string' && errorMsg.includes('Email already exists')) {
-          alert('This email address is already registered. Please use a different email.');
+          this.errorMessage = 'This email address is already registered. Please use a different email.';
         } else {
-          alert('Registration failed. Please try again.');
+          this.errorMessage = 'Registration failed. Please try again.';
         }
       }
     });

@@ -9,28 +9,41 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   credentials = {
     email: '',
     password: ''
   };
+  isLoading: boolean = false;
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
 
   @Output() registerClicked = new EventEmitter<void>();
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  login(){
-    console.log(this.credentials);
+  login() {
+    this.isLoading = true;
+    this.successMessage = null;
+    this.errorMessage = null;
+
     this.authService.login(this.credentials).subscribe({
       next: (response) => {
         console.log('Login successful', response);
-        this.router.navigate(['/dashboard']);
+        this.isLoading = false;
+        this.successMessage = 'Login successful! Redirecting...';
+        setTimeout(() => {
+          this.router.navigate(['/dashboard']).then(() => {
+            this.successMessage = null; 
+          });
+        }, 2000);
       },
       error: (error) => {
         console.error('Login failed', error);
-        alert('Invalid credentials');
+        this.errorMessage = 'Invalid credentials. Please try again.';
+        this.isLoading = false;
       }
     });
   }
