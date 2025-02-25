@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-edit-profile',
+  standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './edit-profile.component.html',
   styleUrls: ['./edit-profile.component.scss']
@@ -29,14 +30,20 @@ export class EditProfileComponent {
   }
 
   ngOnInit(): void {
-    this.authService.getCurrentUser().subscribe(user => {
-      if (user) {
-        this.userId = user.id;
-        this.profileForm.patchValue({
-          name: user.name,
-          email: user.email
-        });
-      } else {
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        if (user) {
+          this.userId = user.id;
+          this.profileForm.patchValue({
+            name: user.name,
+            email: user.email
+          });
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load user profile', err);
         this.router.navigate(['/dashboard']);
       }
     });
@@ -53,6 +60,9 @@ export class EditProfileComponent {
         next: (response) => {
           console.log('Profile updated successfully', response);
           this.successMessage = 'Profile updated successfully!';
+          setTimeout(() => {
+            this.router.navigate(['/profile-page']);
+          }, 1500);
         },
         error: (error) => {
           console.error('Profile update failed', error);

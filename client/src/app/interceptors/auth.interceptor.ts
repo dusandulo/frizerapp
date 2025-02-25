@@ -27,7 +27,7 @@ export const authInterceptor = (
         if (req.url.includes('/refresh-token')) {
           authService.logout();
           router.navigate(['/auth']);
-          return throwError(() => new Error('Refresh token je nevažeći'));
+          return throwError(() => new Error('Refresh is invalid'));
         }
         return handle401Error(authReq, next);
       }

@@ -15,7 +15,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<StylingServices>>> GetAll()
+        public async Task<ActionResult<IEnumerable<StylingServices>>> GetAllServices()
         {
             var services = await _stylingService.GetAllServices();
             return Ok(services);

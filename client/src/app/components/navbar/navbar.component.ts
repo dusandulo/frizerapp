@@ -9,11 +9,12 @@ import { map } from 'rxjs';
   standalone: true,
   imports: [RouterLink, CommonModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss',
+  styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent {
   @Input() isLoggedIn: boolean = false;
   profileMenuOpen: boolean = false;
+  mobileMenuOpen: boolean = false;
   isAdmin: boolean = false;
 
   constructor(
@@ -24,7 +25,7 @@ export class NavbarComponent {
 
   ngOnInit(): void {
     this.authService.getCurrentUser().pipe(
-      map(user => user.role === 1) // 1 is the admin role
+      map(user => user.role === 1) 
     ).subscribe(isAdmin => {
       this.isAdmin = isAdmin;
     });
@@ -34,17 +35,26 @@ export class NavbarComponent {
     this.profileMenuOpen = !this.profileMenuOpen;
   }
 
+  toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
   logout() {
     this.authService.logout();
+    this.profileMenuOpen = false;
+    this.mobileMenuOpen = false;
   }
 
   editProfile() {
     this.router.navigate(['/edit-profile']);
     this.profileMenuOpen = false;
+    this.mobileMenuOpen = false;
   }
+
   openProfile() {
     this.router.navigate(['/profile-page']);
     this.profileMenuOpen = false;
+    this.mobileMenuOpen = false;
   }
 
   @HostListener('document:click', ['$event'])

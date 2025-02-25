@@ -8,6 +8,8 @@ import { CreateAppointmentComponent } from './components/create-appointment/crea
 import { UserListComponent } from './components/user-list/user-list.component';
 import { ProfilePageComponent } from './components/profile-page/profile-page.component';
 import { CreateServiceComponent } from './components/create-service/create-service.component';
+import { BookAppointmentComponent } from './components/book-appointment/book-appointment.component';
+import { AppointmentHistoryComponent } from './components/appointment-history/appointment-history.component';
 
 export const routes: Routes = [
   {
@@ -39,12 +41,22 @@ export const routes: Routes = [
   {
     path: 'create-appointment',
     component: CreateAppointmentComponent,
-    canActivate: [AuthGuard, AdminGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'create-service',
     component: CreateServiceComponent,
     canActivate: [AuthGuard, AdminGuard],
+  },
+  {
+    path: 'book-appointment',
+    component: BookAppointmentComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'appointment-history',
+    component: AppointmentHistoryComponent,
+    canActivate: [AuthGuard],
   },
 
   { path: '', redirectTo: '/auth', pathMatch: 'full' },

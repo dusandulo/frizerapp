@@ -69,12 +69,8 @@ export class AuthService {
     this.http
       .post(`${this.apiUrl}/logout`, {}, { withCredentials: true })
       .subscribe({
-        next: () => {
-          console.log('Logout uspešan na backend-u');
-        },
-        error: (err) => {
-          console.error('Greška pri logout-u na backend-u:', err);
-        },
+        next: () => {},
+        error: () => {},
         complete: () => {
           localStorage.clear();
           this.setAuthState(AuthState.LOGIN);

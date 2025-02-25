@@ -10,6 +10,7 @@ namespace API.Controllers
     public class AppointmentController : ControllerBase
     {
         private readonly IAppointmentService _appointmentService;
+
         public AppointmentController(IAppointmentService appointmentService)
         {
             _appointmentService = appointmentService;
@@ -21,20 +22,25 @@ namespace API.Controllers
             var appointments = await _appointmentService.GetCalendarAppointments(start, end);
             return Ok(appointments);
         }
+
         [HttpPost("book/{appointmentId}")]
-        public async Task<ActionResult<Appointment>> BookAppointment(int appointmentId)
+        public async Task<ActionResult<Appointment>> BookAppointment(int appointmentId, [FromBody] BookingRequest request)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userIdClaim == null)
-                return Unauthorized();
+            if (userIdClaim == null) return Unauthorized();
             int clientId = int.Parse(userIdClaim);
 
-            var appointment = await _appointmentService.BookAppointment(appointmentId, clientId);
-            if (appointment == null)
-                return BadRequest("Appointment not available.");
+            var appointment = await _appointmentService.BookAppointment(appointmentId, clientId, request.StylingServiceId);
+            if (appointment == null) return BadRequest("Appointment not available.");
 
             return Ok(appointment);
         }
+
+        public class BookingRequest
+        {
+            public int? StylingServiceId { get; set; }
+        }
+
         [Authorize(Roles = "Stylist")]
         [HttpGet("stylist")]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentsForStylist()
@@ -60,5 +66,21 @@ namespace API.Controllers
             var created = await _appointmentService.CreateAppointment(appointment);
             return Ok(created);
         }
+
+        [HttpGet("client/{clientId}")]
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentsByClient(int clientId)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null || int.Parse(userIdClaim) != clientId)
+                return Unauthorized(); // Osigurava da korisnik može videti samo svoje termine
+
+            var appointments = await _appointmentService.GetAppointmentsByClient(clientId);
+            return Ok(appointments);
+        }
+    }
+
+    public class BookingRequest
+    {
+        public int? StylingServiceId { get; set; }
     }
 }

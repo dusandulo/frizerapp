@@ -1,24 +1,74 @@
-<div class="container mx-auto px-6 py-8">
-  <div class="bg-white p-6 rounded-lg shadow-md">
-    <h1 class="text-2xl font-bold text-gray-800 mb-4">Profile Page</h1>
+<div class="min-h-screen bg-gradient-to-br from-gray-100 to-indigo-100 p-8">
+  <div class="container mx-auto max-w-2xl">
+    <!-- Header -->
+    <header class="text-center mb-10">
+      <h1 class="text-4xl font-extrabold text-gray-900 mb-2 animate-fade-in">Your Profile</h1>
+      <p class="text-lg text-gray-600">Manage your personal information</p>
+    </header>
 
-    @if (user; as user) {
-    <div class="space-y-4">
-      <div>
-        <label class="text-gray-600 font-medium">Name:</label>
-        <p class="text-gray-800">{{ user.name }}</p>
+    <!-- Profile Card -->
+    <div class="bg-white rounded-2xl shadow-lg p-8 animate-fade-in-up">
+      <div class="flex flex-col items-center space-y-6">
+        <!-- Avatar -->
+        <div class="w-24 h-24 rounded-full bg-indigo-100 flex items-center justify-center shadow-md">
+          <i class="fas fa-user text-indigo-600 text-4xl"></i>
+        </div>
+
+        <!-- User Information -->
+        @if (user) {
+          <div class="w-full space-y-6 text-center">
+            <div class="space-y-2">
+              <label class="text-gray-600 font-medium text-sm uppercase tracking-wide">Name</label>
+              <p class="text-gray-800 text-xl font-semibold">{{ user.name }}</p>
+            </div>
+            <div class="space-y-2">
+              <label class="text-gray-600 font-medium text-sm uppercase tracking-wide">Email</label>
+              <p class="text-gray-800 text-lg">{{ user.email }}</p>
+            </div>
+            <div class="space-y-2">
+              <label class="text-gray-600 font-medium text-sm uppercase tracking-wide">Verified</label><br>
+              <p
+                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+                [ngClass]="{
+                  'bg-green-100 text-green-800': user.isUserVerified,
+                  'bg-red-100 text-red-800': !user.isUserVerified
+                }"
+              >
+                <i
+                  [ngClass]="{
+                    'fas fa-check-circle text-green-500 mr-2': user.isUserVerified,
+                    'fas fa-times-circle text-red-500 mr-2': !user.isUserVerified
+                  }"
+                ></i>
+                {{ user.isUserVerified ? 'Yes' : 'No' }}
+              </p>
+            </div>
+          </div>
+        } @else {
+          <div class="text-center text-gray-600 py-4">
+            <p class="text-lg">Loading your profile...</p>
+            <div class="w-12 h-12 border-4 border-t-transparent border-indigo-600 rounded-full animate-spin mx-auto mt-4"></div>
+          </div>
+        }
       </div>
-      <div>
-        <label class="text-gray-600 font-medium">Email:</label>
-        <p class="text-gray-800">{{ user.email }}</p>
-      </div>
-      <div>
-        <label class="text-gray-600 font-medium">Verified:</label>
-        <p class="text-gray-800">{{ user.isUserVerified ? "Yes" : "No" }}</p>
-      </div>
+
+      <!-- Actions -->
+      @if (user) {
+        <div class="mt-8 flex justify-center gap-4">
+          <button
+            class="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-300"
+            (click)="editProfile()"
+          >
+            Edit Profile
+          </button>
+          <button
+            class="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300"
+            (click)="logout()"
+          >
+            Logout
+          </button>
+        </div>
+      }
     </div>
-    } @else {
-    <p class="text-gray-600">Loading user profile...</p>
-    }
   </div>
 </div>

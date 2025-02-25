@@ -1,5 +1,9 @@
 <div class="dashboard bg-gray-100 min-h-screen flex flex-col">
-    <section class="dashboard-content flex-grow">
-      <app-appointment-calendar></app-appointment-calendar>
-    </section>
-  </div>
+  <section class="dashboard-content flex-grow">
+    <app-appointment-calendar *ngIf="showCalendar"></app-appointment-calendar>
+    <app-book-appointment *ngIf="showBooking"></app-book-appointment>
+    <div *ngIf="!showCalendar && !showBooking" class="text-center text-gray-600 p-6">
+      <p>You do not have permission to view this page.</p>
+    </div>
+  </section>
+</div>

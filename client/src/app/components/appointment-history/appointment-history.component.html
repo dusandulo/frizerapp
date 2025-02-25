@@ -1,0 +1,78 @@
+<div class="min-h-screen bg-gradient-to-br from-gray-100 to-blue-100 p-8">
+    <div class="container mx-auto max-w-6xl space-y-12">
+      <!-- Header -->
+      <header class="text-center">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-2 animate-fade-in">Your Appointment History</h1>
+        <p class="text-lg text-gray-600">Review your past and upcoming bookings</p>
+      </header>
+  
+      <!-- Upcoming Appointments -->
+      <section class="bg-white rounded-2xl shadow-lg p-8">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-semibold text-gray-800">Upcoming Appointments</h2>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+            <i class="fas fa-calendar-check mr-2"></i> {{ upcomingAppointments.length }}
+          </span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div *ngIf="upcomingAppointments.length === 0 && !isLoading" class="col-span-full text-center text-gray-600 py-4">
+            <p class="text-lg">No upcoming appointments scheduled.</p>
+          </div>
+          <div
+            *ngFor="let appointment of upcomingAppointments"
+            class="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border border-green-200"
+          >
+            <div class="flex items-center gap-4">
+              <i class="fas fa-calendar-alt text-green-600 text-2xl"></i>
+              <div>
+                <p class="text-lg font-semibold text-gray-800">
+                  {{ appointment.startTime | date: 'EEE, MMM d, yyyy' }}
+                </p>
+                <p class="text-gray-600">
+                  {{ appointment.startTime | date: 'h:mm a' }} - {{ appointment.endTime | date: 'h:mm a' }}
+                </p>
+                <p class="text-gray-600">Stylist ID: {{ appointment.stylistId }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Past Appointments -->
+      <section class="bg-white rounded-2xl shadow-lg p-8">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-semibold text-gray-800">Past Appointments</h2>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+            <i class="fas fa-history mr-2"></i> {{ pastAppointments.length }}
+          </span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div *ngIf="pastAppointments.length === 0 && !isLoading" class="col-span-full text-center text-gray-600 py-4">
+            <p class="text-lg">No past appointments found.</p>
+          </div>
+          <div
+            *ngFor="let appointment of pastAppointments"
+            class="bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-200"
+          >
+            <div class="flex items-center gap-4">
+              <i class="fas fa-calendar-check text-gray-500 text-2xl"></i>
+              <div>
+                <p class="text-lg font-semibold text-gray-700">
+                  {{ appointment.startTime | date: 'EEE, MMM d, yyyy' }}
+                </p>
+                <p class="text-gray-600">
+                  {{ appointment.startTime | date: 'h:mm a' }} - {{ appointment.endTime | date: 'h:mm a' }}
+                </p>
+                <p class="text-gray-600">Stylist ID: {{ appointment.stylistId }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Loading Spinner -->
+      <div *ngIf="isLoading" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+        <div class="w-12 h-12 border-4 border-t-transparent border-indigo-600 rounded-full animate-spin"></div>
+      </div>
+    </div>
+  </div>
