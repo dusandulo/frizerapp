@@ -21,5 +21,7 @@ public class RegisterDto
 
     [Required]
     public string Role { get; set; } 
+    [Required]
+    public bool IsUserVerified { get; set; }
 }
 }

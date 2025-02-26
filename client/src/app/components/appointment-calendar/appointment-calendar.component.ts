@@ -1,110 +1,85 @@
 import { Component, OnInit } from '@angular/core';
-import { CalendarOptions, EventInput } from '@fullcalendar/core';
-import { AppointmentService } from '../../services/appointment.service';
-import { FullCalendarModule } from '@fullcalendar/angular';
-import { Appointment } from '../../models/appointment.model';
 import { CommonModule } from '@angular/common';
-
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
+import { AppointmentService } from '../../services/appointment.service';
+import { Appointment } from '../../models/appointment.model';
 
 @Component({
   selector: 'app-appointment-calendar',
   standalone: true,
-  imports: [FullCalendarModule, CommonModule],
+  imports: [CommonModule],
   templateUrl: './appointment-calendar.component.html',
   styleUrls: ['./appointment-calendar.component.scss'],
 })
 export class AppointmentCalendarComponent implements OnInit {
-  showBookingModal = false;
-  selectedEvent: any = null;
-  
-  calendarOptions: CalendarOptions = {
-    initialView: 'resourceTimeGridDay',
-    schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives', // Free version for development
-    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, resourceTimeGridPlugin],
-    resources: [],
-    events: [],
-    eventOverlap: false,
-    slotEventOverlap: false,
-    height: 'auto',
-    slotMinTime: '08:00:00',
-    slotMaxTime: '20:00:00',
-    selectable: false,
-    allDaySlot: false,
-    eventTimeFormat: {
-      hour: 'numeric',
-      minute: '2-digit',
-      meridiem: 'short'
-    },
-    eventClassNames: 'cursor-pointer hover:opacity-70 transition-opacity',
-    eventClick: this.handleEventClick.bind(this),
-  };
+  appointments: Appointment[] = [];
+  stylists: { id: number; name: string }[] = [];
+  selectedDate: Date = new Date();
+  days: Date[] = [];
+  isLoading: boolean = false;
 
   constructor(private appointmentService: AppointmentService) {}
 
-  ngOnInit() {
-    const start = new Date();
-    const end = new Date();
-    start.setDate(end.getDate() - 30);
-    end.setDate(end.getDate() + 30);
-
+  ngOnInit(): void {
+    this.generateDays();
     this.loadStylists();
-    this.loadAppointments(start.toISOString(), end.toISOString());
+    this.loadAppointments();
   }
 
-  loadAppointments(start: string, end: string): void {
-    this.appointmentService.getCalendar(start, end).subscribe((appointments: Appointment[]) => {
-      console.log('Appointments from API:', appointments);
-      this.calendarOptions = {
-        ...this.calendarOptions,
-        events: appointments.map((app) => ({
-          id: String(app.id),
-          title: `${app.isBooked ? '🔴 BOOKED' : '🟢 FREE'}`,
-          start: app.startTime,
-          end: app.endTime,
-          resourceId: String(app.stylistId),
-          color: app.isBooked ? '#ff4d4d' : '#3b82f6',
-          textColor: '#ffffff',
-        })) as EventInput[],
-      };
-    });
-  }
-  
-
-  loadStylists(): void {
-    this.appointmentService.getStylists().subscribe((stylists) => {
-      this.calendarOptions = {
-        ...this.calendarOptions,
-        resources: stylists.map(stylist => ({
-          id: String(stylist.id),
-          title: stylist.name
-        }))
-      };
-    });
-  }
-
-  handleEventClick(info: any) {
-    this.selectedEvent = info.event;
-    if (!info.event.extendedProps.isBooked) {
-      this.showBookingModal = true;
+  generateDays(): void {
+    const today = new Date();
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      this.days.push(date);
     }
   }
 
-  confirmBooking() {
-    this.appointmentService.bookAppointment(Number(this.selectedEvent.id))
-      .subscribe({
-        next: (response) => {
-          this.selectedEvent.setExtendedProp('isBooked', true);
-          this.selectedEvent.setProp('title', '🔴 Booked');
-          this.selectedEvent.setProp('color', '#ff4d4d');
-          this.showBookingModal = false;
-        },
-        error: (error) => {
-          console.error('There was an error booking the appointment!', error);
-        }
-      });
+  loadAppointments(): void {
+    this.isLoading = true;
+    const start = new Date(this.selectedDate);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(this.selectedDate);
+    end.setDate(end.getDate() + 7);
+    end.setHours(23, 59, 59, 999);
+
+    this.appointmentService.getCalendar(start.toISOString(), end.toISOString()).subscribe({
+      next: (appointments) => {
+        this.appointments = appointments.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading appointments:', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  loadStylists(): void {
+    this.appointmentService.getStylists().subscribe({
+      next: (stylists) => {
+        this.stylists = stylists;
+      },
+      error: (err) => {
+        console.error('Error loading stylists:', err);
+      }
+    });
+  }
+
+  selectDate(date: Date): void {
+    this.selectedDate = date;
+    this.loadAppointments();
+  }
+
+  getAppointmentsForStylistAndDate(stylistId: number, date: Date): Appointment[] {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    return this.appointments.filter(
+      app => app.stylistId === stylistId &&
+             new Date(app.startTime) >= startOfDay &&
+             new Date(app.endTime) <= endOfDay
+    );
   }
 }

@@ -1,20 +1,8 @@
-.container {
-    max-width: 1200px;
-    margin: auto;
-  }
-  
-  h1 {
-    font-size: 2rem;
-    font-weight: bold;
-  }
-  
-  button {
-    transition: all 0.2s ease-in-out;
-    display: flex;
-    align-items: center;
-  }
-  
-  i {
-    font-size: 1rem;
-  }
-  
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

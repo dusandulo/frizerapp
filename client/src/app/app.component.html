@@ -1,8 +1,7 @@
 <div class="wrapper">
-    <app-navbar *ngIf="authState === AuthState.AUTHENTICATED"></app-navbar>
-    <div class="content">
-      <router-outlet></router-outlet>
-    </div>
-    <app-footer *ngIf="authState === AuthState.AUTHENTICATED"></app-footer>
+  <app-navbar *ngIf="authState === AuthState.AUTHENTICATED"></app-navbar>
+  <div class="content" [ngClass]="{'pt-16': authState === AuthState.AUTHENTICATED}">
+    <router-outlet></router-outlet>
   </div>
-  
+  <app-footer *ngIf="authState === AuthState.AUTHENTICATED"></app-footer>
+</div>

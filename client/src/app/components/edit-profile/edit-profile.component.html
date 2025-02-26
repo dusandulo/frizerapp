@@ -1,94 +1,85 @@
-<div class="min-h-screen bg-gray-100 flex justify-center items-center">
-  <div
-    class="bg-white shadow-lg rounded-2xl px-8 pt-8 pb-10 mb-6 w-full max-w-md transform transition-all duration-300 hover:shadow-xl"
-  >
-    <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">
-      Edit Profile
-    </h2>
+<div class="min-h-screen bg-gradient-to-br from-gray-100 to-indigo-100 p-8 flex justify-center items-center">
+  <div class="bg-white rounded-2xl shadow-lg p-8 w-full max-w-lg transform transition-all duration-300 animate-fade-in-up">
+    <!-- Header -->
+    <header class="text-center mb-8">
+      <h2 class="text-3xl font-extrabold text-gray-900">Edit Your Profile</h2>
+      <p class="text-gray-600 mt-2">Update your personal information</p>
+    </header>
+
+    <!-- Success/Error Messages -->
     <div
       *ngIf="successMessage"
-      class="flex items-center bg-green-100 text-green-800 p-3 rounded-lg mb-4 animate-fade-in"
+      class="flex items-center bg-green-100 text-green-800 p-4 rounded-lg mb-6 shadow-md animate-fade-in"
     >
-      ✅ {{ successMessage }}
+      <i class="fas fa-check-circle text-green-600 mr-3"></i>
+      <span>{{ successMessage }}</span>
     </div>
-
     <div
       *ngIf="errorMessage"
-      class="flex items-center bg-red-100 text-red-800 p-3 rounded-lg mb-4 animate-fade-in"
+      class="flex items-center bg-red-100 text-red-800 p-4 rounded-lg mb-6 shadow-md animate-fade-in"
     >
-      ❌ {{ errorMessage }}
+      <i class="fas fa-exclamation-circle text-red-600 mr-3"></i>
+      <span>{{ errorMessage }}</span>
     </div>
 
-    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-5">
+    <!-- Form -->
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Name Field -->
       <div>
-        <label class="block text-gray-700 text-sm font-semibold mb-1" for="name"
-          >Name:</label
-        >
+        <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+          <i class="fas fa-user mr-2 text-indigo-600"></i> Name
+        </label>
         <input
           id="name"
           type="text"
           formControlName="name"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300"
+          placeholder="Enter your name"
         />
         <div
-          *ngIf="
-            profileForm.get('name')?.invalid &&
-            (profileForm.get('name')?.dirty || profileForm.get('name')?.touched)
-          "
-          class="text-red-500 text-xs mt-1"
+          *ngIf="profileForm.get('name')?.invalid && (profileForm.get('name')?.dirty || profileForm.get('name')?.touched)"
+          class="text-red-500 text-xs mt-1 animate-fade-in"
         >
           Name is required.
         </div>
       </div>
+
+      <!-- Email Field -->
       <div>
-        <label
-          class="block text-gray-700 text-sm font-semibold mb-1"
-          for="email"
-          >Email:</label
-        >
+        <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+          <i class="fas fa-envelope mr-2 text-indigo-600"></i> Email
+        </label>
         <input
           id="email"
           type="email"
           formControlName="email"
           readonly
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          class="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg shadow-sm text-gray-600 cursor-not-allowed"
         />
-        <div
-          *ngIf="
-            profileForm.get('email')?.invalid &&
-            (profileForm.get('email')?.dirty ||
-              profileForm.get('email')?.touched)
-          "
-          class="text-red-500 text-xs mt-1"
-        >
-          <div *ngIf="profileForm.get('email')?.errors?.['required']">
-            Email is required.
-          </div>
-          <div *ngIf="profileForm.get('email')?.errors?.['email']">
-            Email must be a valid email address.
-          </div>
-        </div>
       </div>
 
+      <!-- Password Field -->
       <div>
-        <label
-          class="block text-gray-700 text-sm font-semibold mb-1"
-          for="password"
-          >Password:</label
-        >
+        <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+          <i class="fas fa-lock mr-2 text-indigo-600"></i> Password (optional)
+        </label>
         <input
           id="password"
           type="password"
           formControlName="password"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300"
+          placeholder="Enter new password"
         />
       </div>
+
+      <!-- Submit Button -->
       <div class="flex justify-center">
         <button
           type="submit"
-          class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition transform active:scale-95"
+          [disabled]="profileForm.invalid"
+          class="px-8 py-3 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed text-lg font-semibold"
         >
-          Save
+          Save Changes
         </button>
       </div>
     </form>

@@ -23,7 +23,6 @@ namespace API.Controllers
             var user = await _userService.Register(registerDto);
             return Ok(new
             {
-                Message = "Registracija uspešna, proverite email za OTP",
                 Id = user.Id,
                 Email = user.Email,
                 Name = user.Name,
@@ -138,7 +137,8 @@ namespace API.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 Name = user.Name,
-                IsUserVerified = user.IsUserVerified
+                IsUserVerified = user.IsUserVerified,
+                Role = user.Role
             });
 
             return Ok(userDtos);

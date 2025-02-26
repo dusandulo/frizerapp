@@ -1,10 +1,45 @@
-<footer class="bg-gray-900 text-white py-6 mt-12 animate-fade-in">
-    <div class="container mx-auto px-6 flex flex-col items-center">
-      <div class="flex flex-col items-center mb-4">
-        <p class="text-lg font-semibold">Frizer</p>
-        <p class="text-sm text-gray-400">Your trusted hair salon</p>
-      </div>
-      <div class="flex space-x-6">
+<footer class="bg-gray-900 text-white py-8 mt-12 animate-fade-in">
+  <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- Salon Info -->
+    <div class="flex flex-col items-center md:items-start text-center md:text-left">
+      <p class="text-lg font-semibold mb-2">Frizer</p>
+      <p class="text-sm text-gray-400 mb-4">Your trusted hair salon</p>
+      <p class="text-sm text-gray-300">
+        <i class="fa-solid fa-phone mr-2"></i>Reservations: +381 64 123 4567
+      </p>
+    </div>
+
+    <!-- Working Hours -->
+    <div class="flex flex-col items-center md:items-start text-center md:text-left">
+      <p class="text-lg font-semibold mb-2">Working Hours</p>
+      <ul class="text-sm text-gray-300 space-y-1">
+        <li>Monday - Friday: 9:00 AM - 8:00 PM</li>
+        <li>Saturday: 10:00 AM - 6:00 PM</li>
+        <li>Sunday: Closed</li>
+      </ul>
+    </div>
+
+    <!-- Location -->
+    <div class="flex flex-col items-center md:items-start text-center md:text-left">
+      <p class="text-lg font-semibold mb-2">Location</p>
+      <p class="text-sm text-gray-300">
+        <i class="fa-solid fa-map-marker-alt mr-2"></i>Kralja Petra 12, Belgrade
+      </p>
+      <a
+        href="https://maps.google.com"
+        target="_blank"
+        class="text-sm text-blue-400 hover:underline mt-2"
+      >
+        View on Map
+      </a>
+    </div>
+  </div>
+
+  <!-- Social Media and Copyright -->
+  <div class="container mx-auto px-6 mt-8">
+    <hr class="border-gray-700 my-4" />
+    <div class="flex flex-col md:flex-row justify-between items-center">
+      <div class="flex space-x-6 mb-4 md:mb-0">
         <a href="https://facebook.com" target="_blank" class="hover:scale-110 transition-transform duration-300">
           <i class="fa-brands fa-facebook text-2xl text-blue-500"></i>
         </a>
@@ -15,10 +50,9 @@
           <i class="fa-brands fa-x-twitter text-2xl text-gray-400"></i>
         </a>
       </div>
-      <hr class="border-gray-700 my-4 w-full max-w-md" />
-      <p class="text-center text-sm text-gray-500">
+      <p class="text-sm text-gray-500">
         © 2025 Frizer. All rights reserved.
       </p>
     </div>
-  </footer>
-  
+  </div>
+</footer>
